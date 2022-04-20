@@ -7,9 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "compile" : "solcjs --abi --include-path node_modules/ --base-path . blockchain/contracts/Calculator.sol --output-dir blockchain/build"
+    "compile": "solcjs --abi --include-path node_modules/ --base-path . blockchain/contracts/Calculator.sol --output-dir blockchain/build"
   },
   "dependencies": {
+    "bootstrap": "^5.1.3",
     "next": "12.1.5",
     "react": "18.0.0",
     "react-dom": "18.0.0",

@@ -2,7 +2,7 @@ import Head from 'next/head'
 import { useState } from 'react';
 import Web3 from 'web3';
 import calculatorContract from '../blockchain/calculator';
-import styles from '../styles/Home.module.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Home = () => {
 
