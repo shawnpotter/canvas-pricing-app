@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "compile" : "solcjs --abi --include-path node_modules/ --base-path . blockchain/contracts/Calculator.sol --output-dir blockchain/build"
   },
   "dependencies": {
     "next": "12.1.5",
