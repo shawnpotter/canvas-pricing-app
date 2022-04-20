@@ -11,6 +11,7 @@ const Home = () => {
   const [height, setHeight] = useState('');
   const [width, setWidth] = useState('');
   const [price, setPrice] = useState('');
+  const [address, setAddress] = useState('');
   const [localContract, setLocalContract] = useState('');
 
   const updateHeight = event => {
