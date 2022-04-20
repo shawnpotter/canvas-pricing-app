@@ -23,6 +23,15 @@ const Home = () => {
     setPrice(event.target.value);
   }
 
+  const getCalculationHandler = async () => {
+    try {
+      const finalPrice = await localContract.methods.calculatePrice(height, width, price).call();
+      setResult(finalPrice);
+    } catch(err) {
+      setError(err.message);
+    }
+  }
+
   /* Create wallet handler to connect to browser wallet */
   const walletHandler = async () => {
     if(typeof window !== 'undefined' & typeof window.ethereum !== 'undefined') {
