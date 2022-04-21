@@ -26,7 +26,7 @@ const Home = () => {
 
   const getCalculationHandler = async () => {
     try {
-      const finalPrice = await localContract.methods.calculatePrice(height, width, price).call().gas(3000);
+      const finalPrice = await localContract.methods.calculatePrice(height, width, price).call({gas: 30000});
       setResult(finalPrice);
     } catch(err) {
       setError(err.message);
