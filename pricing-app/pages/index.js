@@ -6,14 +6,16 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Home = () => {
 
+  //Constant useState variables with setters 
   const [error, setError] = useState('');
   const [result, setResult] = useState('');
   const [height, setHeight] = useState('');
   const [width, setWidth] = useState('');
   const [price, setPrice] = useState('');
-  const [address, setAddress] = useState('');
+  const [address, setAddress] = useState(''); //address is never used because we don't send transactions in this but require it for MetaMask integration 
   const [localContract, setLocalContract] = useState('');
 
+  //Updaters for the form inputs that update the values typed into the form fields.
   const updateHeight = event => {
     setHeight(event.target.value);
   }
@@ -24,10 +26,17 @@ const Home = () => {
     setPrice(event.target.value);
   }
 
+  //Handler that sends the width, height and price per square inch to the contract.
   const getCalculationHandler = async () => {
     try {
-      const finalPrice = await localContract.methods.calculatePrice(height, width, price).call({gas: 30000});
+      //TODO Multiply price by 100 to turn minimum 0.01 vakue into a whole number
+
+      const finalPrice = await localContract.methods.calculatePrice(height, width, price).call({ gas: 50000000 });
+
+      //TODO convert price back into decimal by dividing the result by the original multipied amount
       setResult(finalPrice);
+
+       
     } catch(err) {
       setError(err.message);
     }
@@ -61,6 +70,8 @@ const Home = () => {
     }
   }
 
+
+  //Render for the web page
   return (
     <div>
       <Head>
