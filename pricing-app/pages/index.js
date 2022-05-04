@@ -16,10 +16,7 @@ const Home = () => {
   const [height, setHeight] = useState('');
   const [width, setWidth] = useState('');
   const [price, setPrice] = useState('');
-  //const [address, setAddress] = useState(''); //address is never used because we don't send transactions in this but require it for MetaMask integration 
   const [localContract, setLocalContract] = useState('');
-  //const [connectWallet, setConnectWallet] = useState('Connect Wallet');
-  //const [disconnectWallet, setDisconnectWallet] = useState('Disconnect');
   const [statusBtn, setStatusBtn] = useState('Hidden');
   const [connectBtnHidden, setConnecBtnHidden] = useState('');
 
@@ -50,20 +47,27 @@ const Home = () => {
     }
   }
 
-/*   useEffect(()=> {
-  }); */
+  useEffect( () => {
+    ethereum.on('accountsChanged', function(accounts) {
+      if(accounts.length > 0 && localStorage?.getItem('isWalletConnected')){
+        connect();
+      } else {
+        disconnect();
+      }
+    });
+  }, []);
 
-  useEffect(() => {
+  useEffect( () => {
     const connectWalletOnLoad = async () => {
-      if(localStorage?.getItem('isWalletConnected')) {
+      if(localStorage?.getItem('isWalletConnected') === 'true') {
         try {
           await activate(injected);
           createLocalContract();
-          localStorage.setItem('isWalletConnected', true);
-          switchButtons(localStorage?.getItem('isWalletConnected'))
+          
+          switchButtons(true);
         }
         catch(err) {
-          console.log(err)
+          console.log(err);
         }
       }
     }
@@ -82,10 +86,10 @@ function switchButtons(isWalletConnected) {
 
 async function connect(){
   try {
-    const accounts = await activate(injected);
+    await activate(injected);
     createLocalContract();
     localStorage.setItem('isWalletConnected', true);
-    switchButtons(localStorage?.getItem('isWalletConnected'))
+    switchButtons(true);
   } 
   catch (err) {
     console.log(err);
@@ -96,7 +100,8 @@ async function disconnect() {
   try {
     deactivate();
     localStorage.setItem('isWalletConnected', false);
-    switchButtons(localStorage?.getItem('isWalletConnected'))
+    console.log('cleared local storage');
+    switchButtons(false);
   }
   catch (err) {
     console.log(err);
@@ -111,33 +116,6 @@ function createLocalContract(){
     const calculator = calculatorContract(web3);
     setLocalContract(calculator);
 }
-
-  /* Create wallet handler to connect to browser wallet */
- /*  const walletHandler = async () => {
-    //check to see if metamask is installed
-    if(typeof window !== 'undefined' & typeof window.ethereum !== 'undefined') {
-      //try to connect to wallet
-      try {
-        const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
-        
-        //set Address
-        setAddress(accounts[0]);
-        
-        //set Web3 Instance
-        const web3 = new Web3(window.ethereum);
-
-        //create local contract copy
-        const calculator = calculatorContract(web3);
-        setLocalContract(calculator);
-
-      } catch(err) {
-        setError(err.message);
-      }
-    } else {
-      console.log('please install metamask')
-    }
-  } */
-
 
   //Render for the web page
   return (
