@@ -1,10 +1,12 @@
-import Head from 'next/head'
+import Head from 'next/head';
+import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import Web3 from 'web3';
 import {useWeb3React} from "@web3-react/core"
 import calculatorContract from '../blockchain/calculator';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { injected } from '../components/connectors/connectors';
+import metamaskLogo from '../public/metamask-fox.png';
 
 const Home = () => {
 
@@ -18,7 +20,10 @@ const Home = () => {
   const [price, setPrice] = useState('');
   const [localContract, setLocalContract] = useState('');
   const [statusBtn, setStatusBtn] = useState('Hidden');
-  const [connectBtnHidden, setConnecBtnHidden] = useState('');
+  const [connectBtnHidden, setConnecBtnHidden] = useState(true);
+  const [metaMaskInstalled, setMetaMaskInstalled] = useState(false);
+  const [installBtnHidden, setInstallBtnHidden] = useState(true)
+
 
   //Updaters for the form inputs that update the values typed into the form fields.
   const updateHeight = event => {
@@ -34,7 +39,7 @@ const Home = () => {
   //Handler that sends the width, height and price per square inch to the contract.
   const getCalculationHandler = async () => {
     try {
-      //TODO Multiply price by 100 to turn minimum 0.01 vakue into a whole number
+      //TODO Multiply price by 100 to turn minimum 0.01 value into a whole number
 
       const finalPrice = await localContract.methods.calculatePrice(height, width, price).call({ gas: 50000000 });
 
@@ -47,16 +52,48 @@ const Home = () => {
     }
   }
 
+  const resetStorage = () => {
+    localStorage.setItem('isWalletConnected', false);
+  }
+
+
+  /*
+   * If metamask is not installed hide the connect button and disable the submit button.
+   * Once the user installs metamask, reload the page.
+   */
+  useEffect ( () => {
+    if(typeof ethereum === 'undefined') {
+      setConnecBtnHidden(true);
+      setMetaMaskInstalled(false);
+      setInstallBtnHidden(false);
+    }
+  });
+
+  /* 
+   * If metamask is installed and ethereum is not undefined (metamask itself sets ethereum) 
+   * then check for account change. If accounts still has an address then reconnect to the
+   * new address, otherwise if accounts is empty disconnect the user. 
+   */
   useEffect( () => {
-    ethereum.on('accountsChanged', function(accounts) {
-      if(accounts.length > 0 && localStorage?.getItem('isWalletConnected')){
-        connect();
-      } else {
-        disconnect();
-      }
-    });
+    if (typeof ethereum !== 'undefined') {
+      setConnecBtnHidden(false);
+      setMetaMaskInstalled(true);
+      setInstallBtnHidden(true);
+
+      ethereum.on('accountsChanged', function(accounts) {
+        if(accounts.length > 0 && localStorage?.getItem('isWalletConnected')){
+          connect();
+        } else {
+          disconnect();
+        }
+      });
+    }
   }, []);
 
+  /* 
+   * When the page is reloaded and localStorage variable 'isWalletConnected' equals true
+   * then reactivate the connection between the wallet and the page.
+   */
   useEffect( () => {
     const connectWalletOnLoad = async () => {
       if(localStorage?.getItem('isWalletConnected') === 'true') {
@@ -108,6 +145,10 @@ async function disconnect() {
   }
 }
 
+function redirectMetaMask() {
+  window.open("https://metamask.io/download/", "_blank")
+}
+
 function createLocalContract(){
     //set Web3 Instance
     const web3 = new Web3(window.ethereum);
@@ -134,6 +175,16 @@ function createLocalContract(){
             <div className='navbar-end'>
                 <button onClick={connect} className='btn btn-primary' hidden={connectBtnHidden}>Connect Wallet</button>
                 <button className='btn btn-primary' hidden={statusBtn} disabled>Connected</button>
+                <button onClick={redirectMetaMask} className='btn btn-primary' hidden={installBtnHidden}>
+                  <div className='row pt-1'>
+                    <div className='col'>
+                      <Image height='23px' width='25px' src={metamaskLogo}></Image>
+                    </div>
+                    <div className='col-auto'>
+                      <span>Install MetaMask</span>
+                    </div>
+                  </div>
+                </button>
             </div>
           </nav>
           <section>
@@ -165,7 +216,10 @@ function createLocalContract(){
                 </div>
             </form>
             <div>
-                <button className='btn btn-success'  onClick={getCalculationHandler}>Submit</button>
+                <button className='btn btn-success'  onClick={getCalculationHandler} disabled={metaMaskInstalled}>Submit</button>  
+            </div>
+            <div>
+              <button className='btn btn-warning' onClick={resetStorage}>DEBUG: RESET LOCALSTORAGE</button>
             </div>
         </div>
       </div>
