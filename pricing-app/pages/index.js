@@ -21,7 +21,7 @@ const Home = () => {
   const [localContract, setLocalContract] = useState('');
   const [statusBtn, setStatusBtn] = useState('Hidden');
   const [connectBtnHidden, setConnecBtnHidden] = useState(true);
-  const [metaMaskInstalled, setMetaMaskInstalled] = useState(false);
+  const [metaMaskNotInstalled, setMetaMaskNotInstalled] = useState(false);
   const [installBtnHidden, setInstallBtnHidden] = useState(true)
 
 
@@ -64,7 +64,7 @@ const Home = () => {
   useEffect(() => {
     if (typeof ethereum === 'undefined') {
       setConnecBtnHidden(true);
-      setMetaMaskInstalled(false);
+      setMetaMaskNotInstalled(true);
       setInstallBtnHidden(false);
     }
   });
@@ -76,8 +76,9 @@ const Home = () => {
    */
   useEffect(() => {
     if (typeof ethereum !== 'undefined') {
+      console.log('Metamask Found');
       setConnecBtnHidden(false);
-      setMetaMaskInstalled(true);
+      setMetaMaskNotInstalled(false);
       setInstallBtnHidden(true);
 
       ethereum.on('accountsChanged', function (accounts) {
@@ -207,7 +208,7 @@ const Home = () => {
                   </label>
                 </div>
                 <div className='container btn_container pt-5'>
-                  <button className='btn btn-success' onClick={getCalculationHandler} disabled={metaMaskInstalled}>Submit</button>
+                  <button className='btn btn-success' onClick={getCalculationHandler} disabled={metaMaskNotInstalled}>Submit</button>
                 </div>
               </div>
               <div className='col-6'>
