@@ -39,19 +39,19 @@ const Home = () => {
   //Handler that sends the width, height and price per square inch to the contract.
   const getCalculationHandler = async () => {
     try {
-      //TODO Multiply price by 100 to turn minimum 0.01 value into a whole number
+      
+      //multiply price by 100 to eliminate floating point numbers
+      const finalPrice = await localContract.methods.calculatePrice(height, width, (price * 100)).call({ gas: 50000000 });
 
-      const finalPrice = await localContract.methods.calculatePrice(height, width, price).call({ gas: 50000000 });
-
-      //TODO convert price back into decimal by dividing the result by the original multipied amount
-      setResult(finalPrice);
-
+      //convert price back into decimal by dividing the result by the original multipied amount and set Result
+      setResult((finalPrice/100));
 
     } catch (err) {
       setError(err.message);
     }
   }
 
+  //Debugging for forcibly resetting local Storage. Assign to a button's onclick to use
   const resetStorage = () => {
     localStorage.setItem('isWalletConnected', false);
   }
