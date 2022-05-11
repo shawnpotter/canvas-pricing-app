@@ -1,0 +1,75 @@
+body {
+    background-color: #1f2029 !important;
+    color: #c4c3ca !important;
+    height: 100vh;
+}
+
+.navbar-brand {
+    color: #c4c3ca !important;
+}
+
+label.form-label {
+    width: 100% !important;
+}
+
+input {
+    color: #c4c3ca !important;
+    background-color: #1f2029 !important;
+    border: none;
+}
+
+.form-main {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.btn_container {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.calculatorForm {
+    border-radius: 0.3rem;
+    box-sizing: border-box;
+    height: 31rem;
+    padding: 1.25rem;
+    width: 40rem;
+    background-color: #2a2b38 !important;
+    background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
+    background-repeat: no-repeat;
+}
+
+.form-label, .result {
+    color: #c4c3ca;
+    font-family: sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 1rem;
+}
+
+.navbar-brand {
+    color: #EEF3D2;
+}
+
+.btn {
+    /* background-color: #B689C0 !important; */
+    transition: all 200ms linear;
+    background-color: #ffeba7 !important;
+    color: #102770 !important;
+    box-shadow: 0 8px 24px 0 rgba(255,235,167,.2) !important;
+}
+
+.btn:active,
+.btn:focus{  
+    background-color: #102770 !important;
+    color: #ffeba7 !important;
+    box-shadow: 0 8px 24px 0 rgba(16,39,112,.2) !important;
+}
+
+.btn:hover {
+    background-color: #102770 !important;
+    color: #ffeba7 !important;
+    box-shadow: 0 8px 24px 0 rgba(16,39,112,.2) !important;
+}

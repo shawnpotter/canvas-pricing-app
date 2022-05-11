@@ -89,37 +89,43 @@ const Home = () => {
                 <button onClick={walletHandler} className='btn btn-primary'>Connect Wallet</button>
             </div>
           </nav>
-          <section>
-            <div className='container'>
-                <p>Result: {result}</p>
-            </div>
-          </section>
-          <section>
-            <div className='container text-danger'>
-                <p>{error}</p>
-            </div>
-          </section>
-          <div>
+          <div className='container form-main'>
             <form className='calculatorForm'>
-                <div>
+              <div className='row'>
+                <div className='col-6'>
+                  <div>
                     <label className='form-label'> Width:
-                        <input onChange={updateWidth} className='form-control' type={"text"} name={"width"} />
+                      <input onChange={updateWidth} className='form-control' type={"text"} name={"width"} />
                     </label>
-                </div>
-                <div>
+                  </div>
+                  <div>
                     <label className='form-label'> Height:
                         <input onChange={updateHeight} className='form-control' type={"text"} name={"height"} />
                     </label>
-                </div>
-                <div>
+                  </div>
+                  <div>
                     <label className='form-label'> Price per Square Inch:
                         <input onChange={updatePrice} className='form-control' type={"text"} name={"squareInch"} />
                     </label>
+                  </div>
+                  <div className='container btn_container pt-5'>
+                    <button className='btn btn-success'  onClick={getCalculationHandler}>Submit</button>
+                  </div>
                 </div>
+                <div className='col-6'>
+                  <section>
+                    <div className='container result'>
+                      <p>Result: {result}</p>
+                    </div>
+                  </section>
+                  <section>
+                    <div className='container text-danger'>
+                      <p>{error}</p>
+                    </div>
+                  </section>
+                </div>
+              </div>
             </form>
-            <div>
-                <button className='btn btn-success'  onClick={getCalculationHandler}>Submit</button>
-            </div>
         </div>
       </div>
     </div>
