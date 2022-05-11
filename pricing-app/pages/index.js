@@ -189,7 +189,7 @@ const Home = () => {
           </div>
         </nav>
         <div className='container form-main'>
-          <form className='calculatorForm'>
+          <div className='calculatorForm'>
             <div className='row'>
               <div className='col-6'>
                 <div>
@@ -224,7 +224,7 @@ const Home = () => {
                 </section>
               </div>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </div>
