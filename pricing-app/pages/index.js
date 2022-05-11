@@ -52,6 +52,7 @@ const Home = () => {
     }
   }
 
+  //Debugging for forcibly resetting local Storage. Assign to a button's onclick to use
   const resetStorage = () => {
     localStorage.setItem('isWalletConnected', false);
   }
