@@ -1,19 +1,29 @@
-import Head from 'next/head'
-import { useState } from 'react';
+import Head from 'next/head';
+import Image from 'next/image';
+import { useState, useEffect } from 'react';
 import Web3 from 'web3';
+import { useWeb3React } from "@web3-react/core"
 import calculatorContract from '../blockchain/calculator';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { injected } from '../components/connectors/connectors';
+import metamaskLogo from '../public/metamask-fox.png';
 
 const Home = () => {
 
-  //Constant useState variables with setters 
+  const { activate, deactivate } = useWeb3React();
+
+  //React hooks
   const [error, setError] = useState('');
   const [result, setResult] = useState('');
   const [height, setHeight] = useState('');
   const [width, setWidth] = useState('');
   const [price, setPrice] = useState('');
-  const [address, setAddress] = useState(''); //address is never used because we don't send transactions in this but require it for MetaMask integration 
   const [localContract, setLocalContract] = useState('');
+  const [statusBtn, setStatusBtn] = useState('Hidden');
+  const [connectBtnHidden, setConnecBtnHidden] = useState(true);
+  const [metaMaskInstalled, setMetaMaskInstalled] = useState(false);
+  const [installBtnHidden, setInstallBtnHidden] = useState(true)
+
 
   //Updaters for the form inputs that update the values typed into the form fields.
   const updateHeight = event => {
@@ -29,47 +39,124 @@ const Home = () => {
   //Handler that sends the width, height and price per square inch to the contract.
   const getCalculationHandler = async () => {
     try {
-      //TODO Multiply price by 100 to turn minimum 0.01 vakue into a whole number
+      //TODO Multiply price by 100 to turn minimum 0.01 value into a whole number
 
       const finalPrice = await localContract.methods.calculatePrice(height, width, price).call({ gas: 50000000 });
 
       //TODO convert price back into decimal by dividing the result by the original multipied amount
       setResult(finalPrice);
 
-       
-    } catch(err) {
+
+    } catch (err) {
       setError(err.message);
     }
   }
 
-  /* Create wallet handler to connect to browser wallet */
-  const walletHandler = async () => {
-    if(typeof window !== 'undefined' & typeof window.ethereum !== 'undefined') {
-      //try to connect to wallet
-      try {
-        await window.ethereum.request({ method: "eth_requestAccounts" });
+  const resetStorage = () => {
+    localStorage.setItem('isWalletConnected', false);
+  }
 
-        //set Web3 Instance
-        const web3 = new Web3(window.ethereum);
 
-        //get account addresses
-        const accounts = await web3.eth.getAccounts();
+  /*
+   * If metamask is not installed hide the connect button and disable the submit button.
+   * Once the user installs metamask, reload the page.
+   */
+  useEffect(() => {
+    if (typeof ethereum === 'undefined') {
+      setConnecBtnHidden(true);
+      setMetaMaskInstalled(false);
+      setInstallBtnHidden(false);
+    }
+  });
 
-        //set Address
-        setAddress(accounts[0]);
+  /* 
+   * If metamask is installed and ethereum is not undefined (metamask itself sets ethereum) 
+   * then check for account change. If accounts still has an address then reconnect to the
+   * new address, otherwise if accounts is empty disconnect the user. 
+   */
+  useEffect(() => {
+    if (typeof ethereum !== 'undefined') {
+      setConnecBtnHidden(false);
+      setMetaMaskInstalled(true);
+      setInstallBtnHidden(true);
 
-        //create local contract copy
-        const calculator = calculatorContract(web3);
-        setLocalContract(calculator);
+      ethereum.on('accountsChanged', function (accounts) {
+        if (accounts.length > 0 && localStorage?.getItem('isWalletConnected')) {
+          connect();
+        } else {
+          disconnect();
+        }
+      });
+    }
+  }, []);
 
-      } catch(err) {
-        setError(err.message);
+  /* 
+   * When the page is reloaded and localStorage variable 'isWalletConnected' equals true
+   * then reactivate the connection between the wallet and the page.
+   */
+  useEffect(() => {
+    const connectWalletOnLoad = async () => {
+      if (localStorage?.getItem('isWalletConnected') === 'true') {
+        try {
+          await activate(injected);
+          createLocalContract();
+
+          switchButtons(true);
+        }
+        catch (err) {
+          console.log(err);
+        }
       }
+    }
+    connectWalletOnLoad();
+  }, []);
+
+  function switchButtons(isWalletConnected) {
+    if (isWalletConnected) {
+      setConnecBtnHidden('Hidden');
+      setStatusBtn('');
     } else {
-      console.log('please install metamask')
+      setConnecBtnHidden('');
+      setStatusBtn('Hidden');
     }
   }
 
+  async function connect() {
+    try {
+      await activate(injected);
+      createLocalContract();
+      localStorage.setItem('isWalletConnected', true);
+      switchButtons(true);
+    }
+    catch (err) {
+      console.log(err);
+    }
+  }
+
+  async function disconnect() {
+    try {
+      deactivate();
+      localStorage.setItem('isWalletConnected', false);
+      console.log('cleared local storage');
+      switchButtons(false);
+    }
+    catch (err) {
+      console.log(err);
+    }
+  }
+
+  function redirectMetaMask() {
+    window.open("https://metamask.io/download/", "_blank")
+  }
+
+  function createLocalContract() {
+    //set Web3 Instance
+    const web3 = new Web3(window.ethereum);
+
+    //create local contract copy
+    const calculator = calculatorContract(web3);
+    setLocalContract(calculator);
+  }
 
   //Render for the web page
   return (
@@ -79,53 +166,64 @@ const Home = () => {
         <meta name="description" content="A blockchain pricing tool" />
       </Head>
       <div className='container'>
-          <nav className='navbar mt-4'>
-            <div>
-                <div className='navbar-brand'>
-                    <h1>Calculator App</h1>
-                </div>
+        <nav className='navbar mt-4'>
+          <div>
+            <div className='navbar-brand'>
+              <h1>Calculator App</h1>
             </div>
-            <div className='navbar-end'>
-                <button onClick={walletHandler} className='btn btn-primary'>Connect Wallet</button>
-            </div>
-          </nav>
-          <div className='container form-main'>
-            <form className='calculatorForm'>
-              <div className='row'>
-                <div className='col-6'>
-                  <div>
-                    <label className='form-label'> Width:
-                      <input onChange={updateWidth} className='form-control' type={"text"} name={"width"} />
-                    </label>
-                  </div>
-                  <div>
-                    <label className='form-label'> Height:
-                        <input onChange={updateHeight} className='form-control' type={"text"} name={"height"} />
-                    </label>
-                  </div>
-                  <div>
-                    <label className='form-label'> Price per Square Inch:
-                        <input onChange={updatePrice} className='form-control' type={"text"} name={"squareInch"} />
-                    </label>
-                  </div>
-                  <div className='container btn_container pt-5'>
-                    <button className='btn btn-success'  onClick={getCalculationHandler}>Submit</button>
-                  </div>
+          </div>
+          <div className='navbar-end'>
+            <button onClick={connect} className='btn btn-primary' hidden={connectBtnHidden}>Connect Wallet</button>
+            <button className='btn btn-primary' hidden={statusBtn} disabled>Connected</button>
+            <button onClick={redirectMetaMask} className='btn btn-primary' hidden={installBtnHidden}>
+              <div className='row pt-1'>
+                <div className='col'>
+                  <Image height='23px' width='25px' src={metamaskLogo}></Image>
                 </div>
-                <div className='col-6'>
-                  <section>
-                    <div className='container result'>
-                      <p>Result: {result}</p>
-                    </div>
-                  </section>
-                  <section>
-                    <div className='container text-danger'>
-                      <p>{error}</p>
-                    </div>
-                  </section>
+                <div className='col-auto'>
+                  <span>Install MetaMask</span>
                 </div>
               </div>
-            </form>
+            </button>
+          </div>
+        </nav>
+        <div className='container form-main'>
+          <form className='calculatorForm'>
+            <div className='row'>
+              <div className='col-6'>
+                <div>
+                  <label className='form-label'> Width:
+                    <input onChange={updateWidth} className='form-control' type={"text"} name={"width"} />
+                  </label>
+                </div>
+                <div>
+                  <label className='form-label'> Height:
+                    <input onChange={updateHeight} className='form-control' type={"text"} name={"height"} />
+                  </label>
+                </div>
+                <div>
+                  <label className='form-label'> Price per Square Inch:
+                    <input onChange={updatePrice} className='form-control' type={"text"} name={"squareInch"} />
+                  </label>
+                </div>
+                <div className='container btn_container pt-5'>
+                  <button className='btn btn-success' onClick={getCalculationHandler} disabled={metaMaskInstalled}>Submit</button>
+                </div>
+              </div>
+              <div className='col-6'>
+                <section>
+                  <div className='container result'>
+                    <p>Result: {result}</p>
+                  </div>
+                </section>
+                <section>
+                  <div className='container text-danger'>
+                    <p>{error}</p>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>
