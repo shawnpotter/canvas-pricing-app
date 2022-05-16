@@ -33,7 +33,9 @@ const Home = () => {
     setWidth(event.target.value);
   }
   const updatePrice = event => {
-    setPrice(event.target.value);
+    let num =event.target.value;
+    let priceValueFormat = (Number.parseFloat(num).toFixed(2));
+    setPrice(priceValueFormat);
   }
 
   //Handler that sends the width, height and price per square inch to the contract.
@@ -193,18 +195,18 @@ const Home = () => {
             <div className='row'>
               <div className='col-6'>
                 <div>
-                  <label className='form-label'> Width:
+                  <label className='form-label'> Width: (Inches)
                     <input onChange={updateWidth} className='form-control' type={"text"} name={"width"} />
                   </label>
                 </div>
                 <div>
-                  <label className='form-label'> Height:
+                  <label className='form-label'> Height: (Inches)
                     <input onChange={updateHeight} className='form-control' type={"text"} name={"height"} />
                   </label>
                 </div>
                 <div>
-                  <label className='form-label'> Price per Square Inch:
-                    <input onChange={updatePrice} className='form-control' type={"text"} name={"squareInch"} />
+                  <label className='form-label'> Price per Square Inch: $USD
+                    <input onChange={updatePrice} className='form-control' type={"number"} step=".01" min={"0"} max={"10"} placeholder={"0.00"} name={"squareInch"} />
                   </label>
                 </div>
                 <div className='container btn_container pt-5'>
