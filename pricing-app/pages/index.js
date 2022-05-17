@@ -152,12 +152,6 @@ const Home = () => {
     }
   }
 
-  //Debugging for forcibly resetting local Storage. Assign to a button's onclick to use
-  const resetStorage = () => {
-    localStorage.setItem('isWalletConnected', false);
-  }
-
-
   /*
    * If metamask is not installed hide the connect button and disable the submit button.
    * Once the user installs metamask, reload the page.
