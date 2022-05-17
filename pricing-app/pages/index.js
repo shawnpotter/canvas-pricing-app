@@ -138,22 +138,37 @@ const Home = () => {
 
   //function for validating Price input
   function validatePriceInput() {
+
+    //if price is not a number or an empty string
     if(price.isNaN || price === '') {
+
+      //set error message and reveal
       setPriceValidText("Must be a number");
       setPriceValidHidden(false);
+      
+      //return false to validator()
       return false;
     } 
-    //else if price is less than zero set valid error message and set hidden false
+    //else if price is less than zero
     else if (price < 0) {
+
+      //set error message and reveal
       setPriceValidText("Must enter a a number 0 or higher");
       setPriceValidHidden(false);
+
+      //return false to validator()
       return false;
     } 
     //else return true and set the Validation message back to hidden
     else {
+      //if priceValidHidden equals false
       if (!priceValidHidden) {
+
+        //set priceValidHidden to true and hide error message
         setPriceValidHidden(true);
       }
+
+      //return true to validator()
       return true;
     }
   }
@@ -193,15 +208,28 @@ const Home = () => {
   useEffect(() => {
     if (typeof ethereum !== 'undefined') {
       console.log('Metamask Found');
+      
+      //unhide connect button
       setConnecBtnHidden(false);
+      
+      //enable the submit button
       setMetaMaskNotInstalled(false);
+      
+      //hide the install button
       setInstallBtnHidden(true);
 
+      //if the account is changed inside the wallet
       ethereum.on('accountsChanged', function (accounts) {
+
+        //and accounts at least a single account in it's array and isWalletConnected is true
         if (accounts.length > 0 && localStorage?.getItem('isWalletConnected')) {
+          
           connect();
+
         } else {
+
           disconnect();
+
         }
       });
     }
@@ -213,8 +241,12 @@ const Home = () => {
    */
   useEffect(() => {
     const connectWalletOnLoad = async () => {
+
+      //if isWalletConnected variable in local storage is true
       if (localStorage?.getItem('isWalletConnected') === 'true') {
         try {
+
+          //then reconnect to the wallet and recreate the local contract
           await activate(injected);
           createLocalContract();
 
@@ -228,16 +260,18 @@ const Home = () => {
     connectWalletOnLoad();
   }, []);
 
+  //switches the 'Connect Wallet' button and the 'Connected' button based on isWalletConnected
   function switchButtons(isWalletConnected) {
     if (isWalletConnected) {
       setConnecBtnHidden('Hidden');
       setStatusBtn('');
-    } else {
+    } else { 
       setConnecBtnHidden('');
       setStatusBtn('Hidden');
     }
   }
 
+  //connects to the wallet, creates a local contract, and then sets a localStorage var
   async function connect() {
     try {
       await activate(injected);
@@ -250,6 +284,7 @@ const Home = () => {
     }
   }
 
+  //when metamask emits that it disconnected deactivate, set local storage var, and switch buttons
   async function disconnect() {
     try {
       deactivate();
@@ -262,6 +297,7 @@ const Home = () => {
     }
   }
 
+  //redirects the user to metamask's website when they click the install button
   function redirectMetaMask() {
     window.open("https://metamask.io/download/", "_blank")
   }
