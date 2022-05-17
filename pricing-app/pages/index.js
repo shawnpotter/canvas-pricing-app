@@ -82,25 +82,27 @@ const Home = () => {
       //return false to validator
       return false;
     } else {
+
       //return true to validator
       return true;
+
     }
   }
 
   //function for validating Width Input
   function validateWidthInput() {
 
-    //if width is not a number or an empty string set valid error message and set hidden false
+    //if width is not a number or an empty string set error message and set hidden false
     if (width.isNaN || width === '') {
       setWidthValidText("Must be a number");
       setWidthValidHidden(false);
     } 
-    //else if width is less than zero set valid error message and set hidden false
+    //else if width is less than zero set error message and set hidden false
     else if (width < 0) {
       setWidthValidText("Must enter a a number 0 or higher");
       setWidthValidHidden(false);
     } 
-    //else return true and set the Validation message back to hidden
+    //else return true and set the error message back to hidden
     else {
       if(!widthValidHidden) {
         setWidthValidHidden(true);
@@ -111,7 +113,7 @@ const Home = () => {
 
   //function for validating Height input
   function validateHeightInput() {
-    //if height is not a number or an empty string set valid error message and set hidden false
+    //if height is not a number or an empty string set error message and set hidden false
     if (height.isNaN || height === '') {
       
       setHeightValidText("Must be a number");
@@ -119,7 +121,7 @@ const Home = () => {
       
       return false;
     } 
-    //else if height is less than zero set valid error message and set hidden false
+    //else if height is less than zero set error message and set hidden false
     else if (height < 0) {
       
       setHeightValidText("Must enter a a number 0 or higher");
@@ -127,7 +129,7 @@ const Home = () => {
       
       return false;
     } 
-    //else return true and set the Validation message back to hidden
+    //else return true and set the error message back to hidden
     else {
       if (!heightValidHidden) {
         setHeightValidHidden(true);
@@ -276,7 +278,14 @@ const Home = () => {
     try {
       await activate(injected);
       createLocalContract();
+      
       localStorage.setItem('isWalletConnected', true);
+      
+      //if wallet error showing hide wallet error message
+      if(!walletErrorHidden) {
+        setWalletErrorHidden(true);
+      }
+      
       switchButtons(true);
     }
     catch (err) {
