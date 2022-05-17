@@ -69,12 +69,20 @@ const Home = () => {
     }
   }
 
+  //function checks isWalletConnected in local storage and display an error if needed
   function validateWalletConnection() {
+
+    //if isWalletConnected is not equal to true
     if(localStorage?.getItem('isWalletConnected') !== 'true') {
+      
+      //set and reveal wallet error message
       setWalletError('You must connect your Wallet')
       setWalletErrorHidden(false);
+      
+      //return false to validator
       return false;
     } else {
+      //return true to validator
       return true;
     }
   }
