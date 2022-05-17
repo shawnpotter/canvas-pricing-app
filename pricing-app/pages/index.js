@@ -45,32 +45,42 @@ const Home = () => {
     setPrice(priceValueFormat);
   }
 
+  /* 
+   * runs validation checks on the inputs and if all return true then runs the
+   * getCalculationHandler function. If 'result' was previously changed then also
+   * changes 'result' back to an empty string.
+   */
   const validator = () => {
+    //run validate functions and set boolean vars for the results
     let widthValid = validateWidthInput();
     let heightValid = validateHeightInput();
     let priceValid = validatePriceInput();
 
+    //if all functions returned true run getCalculationHandler()
     if(widthValid && heightValid && priceValid) {
       getCalculationHandler();
-    } else if (result !== '') {
+    } 
+    //if result was previously changed then revert back to empty string
+    else if (result !== '') {
       setResult('');
     }
   }
 
-  function runValidation() {
-    
-  }
-
   //function for validating Width Input
   function validateWidthInput() {
+
+    //if width is not a number or an empty string set valid error message and set hidden false
     if (width.isNaN || width === '') {
       setWidthValidText("Must be a number");
       setWidthValidHidden(false);
     } 
+    //else if width is less than zero set valid error message and set hidden false
     else if (width < 0) {
       setWidthValidText("Must enter a a number 0 or higher");
       setWidthValidHidden(false);
-    } else {
+    } 
+    //else return true and set the Validation message back to hidden
+    else {
       if(!widthValidHidden) {
         setWidthValidHidden(true);
       }
@@ -80,15 +90,24 @@ const Home = () => {
 
   //function for validating Height input
   function validateHeightInput() {
+    //if height is not a number or an empty string set valid error message and set hidden false
     if (height.isNaN || height === '') {
+      
       setHeightValidText("Must be a number");
       setHeightValidHidden(false);
+      
       return false;
-    } else if (height < 0) {
+    } 
+    //else if height is less than zero set valid error message and set hidden false
+    else if (height < 0) {
+      
       setHeightValidText("Must enter a a number 0 or higher");
       setHeightValidHidden(false);
+      
       return false;
-    } else {
+    } 
+    //else return true and set the Validation message back to hidden
+    else {
       if (!heightValidHidden) {
         setHeightValidHidden(true);
       }
@@ -103,11 +122,14 @@ const Home = () => {
       setPriceValidHidden(false);
       return false;
     } 
+    //else if price is less than zero set valid error message and set hidden false
     else if (price < 0) {
       setPriceValidText("Must enter a a number 0 or higher");
       setPriceValidHidden(false);
       return false;
-    } else {
+    } 
+    //else return true and set the Validation message back to hidden
+    else {
       if (!priceValidHidden) {
         setPriceValidHidden(true);
       }
