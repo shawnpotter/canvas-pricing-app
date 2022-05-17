@@ -7,6 +7,7 @@ import calculatorContract from '../blockchain/calculator';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { injected } from '../components/connectors/connectors';
 import metamaskLogo from '../public/metamask-fox.png';
+import Guidelines from '../pages/api/article.js';
 
 const Home = () => {
 
@@ -227,7 +228,8 @@ const Home = () => {
               </div>
             </div>
           </div>
-        </div>
+        <Guidelines/> 
+       </div>
       </div>
     </div>
   )
