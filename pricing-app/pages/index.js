@@ -23,6 +23,13 @@ const Home = () => {
   const [connectBtnHidden, setConnecBtnHidden] = useState(true);
   const [metaMaskNotInstalled, setMetaMaskNotInstalled] = useState(false);
   const [installBtnHidden, setInstallBtnHidden] = useState(true)
+  const [widthValidHidden, setWidthValidHidden] = useState(true);
+  const [heightValidHidden, setHeightValidHidden] = useState(true);
+  const [priceValidHidden, setPriceValidHidden] = useState(true);
+  const [widthValidText, setWidthValidText] = useState('');
+  const [heightValidText, setHeightValidText] = useState('');
+  const [priceValidText, setPriceValidText] = useState('');
+
 
 
   //Updaters for the form inputs that update the values typed into the form fields.
@@ -36,6 +43,76 @@ const Home = () => {
     let num =event.target.value;
     let priceValueFormat = (Number.parseFloat(num).toFixed(2));
     setPrice(priceValueFormat);
+  }
+
+  const validator = () => {
+    let widthValid = validateWidthInput();
+    let heightValid = validateHeightInput();
+    let priceValid = validatePriceInput();
+
+    if(widthValid && heightValid && priceValid) {
+      getCalculationHandler();
+    } else if (result !== '') {
+      setResult('');
+    }
+  }
+
+  function runValidation() {
+    
+  }
+
+  //function for validating Width Input
+  function validateWidthInput() {
+    if (width.isNaN || width === '') {
+      setWidthValidText("Must be a number");
+      setWidthValidHidden(false);
+    } 
+    else if (width < 0) {
+      setWidthValidText("Must enter a a number 0 or higher");
+      setWidthValidHidden(false);
+    } else {
+      if(!widthValidHidden) {
+        setWidthValidHidden(true);
+      }
+      return true;
+    }
+  }
+
+  //function for validating Height input
+  function validateHeightInput() {
+    if (height.isNaN || height === '') {
+      setHeightValidText("Must be a number");
+      setHeightValidHidden(false);
+      return false;
+    } else if (height < 0) {
+      setHeightValidText("Must enter a a number 0 or higher");
+      setHeightValidHidden(false);
+      return false;
+    } else {
+      if (!heightValidHidden) {
+        setHeightValidHidden(true);
+      }
+      return true;
+    }
+  }
+
+  //function for validating Price input
+  function validatePriceInput() {
+    if(price.isNaN || price === '') {
+      setPriceValidText("Must be a number");
+      setPriceValidHidden(false);
+      return false;
+    } 
+    else if (price < 0) {
+      setPriceValidText("Must enter a a number 0 or higher");
+      setPriceValidHidden(false);
+      return false;
+    } else {
+      if (!priceValidHidden) {
+        setPriceValidHidden(true);
+      }
+      return true;
+    }
   }
 
   //Handler that sends the width, height and price per square inch to the contract.
@@ -196,21 +273,24 @@ const Home = () => {
               <div className='col-6'>
                 <div>
                   <label className='form-label'> Width: (Inches)
-                    <input onChange={updateWidth} className='form-control' type={"text"} name={"width"} />
+                    <input onChange={updateWidth} className='form-control' type={"text"} name={"width"} required/>
+                    <span className='text-danger' hidden={widthValidHidden}>{widthValidText}</span>
                   </label>
                 </div>
                 <div>
                   <label className='form-label'> Height: (Inches)
-                    <input onChange={updateHeight} className='form-control' type={"text"} name={"height"} />
+                    <input onChange={updateHeight} className='form-control' type={"text"} name={"height"} required/>
+                    <span className='text-danger' hidden={heightValidHidden}>{heightValidText}</span>
                   </label>
                 </div>
                 <div>
                   <label className='form-label'> Price per Square Inch: $USD
-                    <input onChange={updatePrice} className='form-control' type={"number"} step=".01" min={"0"} max={"10"} placeholder={"0.00"} name={"squareInch"} />
+                    <input onChange={updatePrice} className='form-control' type={"number"} step=".01" min={"0"} max={"10"} placeholder={"0.00"} name={"squareInch"} required/>
+                    <span className='text-danger' hidden={priceValidHidden}>{priceValidText}</span>
                   </label>
                 </div>
                 <div className='container btn_container pt-5'>
-                  <button className='btn btn-success' onClick={getCalculationHandler} disabled={metaMaskNotInstalled}>Submit</button>
+                  <button className='btn btn-success' onClick={validator} disabled={metaMaskNotInstalled}>Submit</button>
                 </div>
               </div>
               <div className='col-6'>
