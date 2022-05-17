@@ -29,6 +29,8 @@ const Home = () => {
   const [widthValidText, setWidthValidText] = useState('');
   const [heightValidText, setHeightValidText] = useState('');
   const [priceValidText, setPriceValidText] = useState('');
+  const [walletErrorHidden, setWalletErrorHidden] = useState(true);
+  const [walletError, setWalletError] = useState('');
 
 
 
@@ -55,14 +57,25 @@ const Home = () => {
     let widthValid = validateWidthInput();
     let heightValid = validateHeightInput();
     let priceValid = validatePriceInput();
+    let walletConnected = validateWalletConnection();
 
     //if all functions returned true run getCalculationHandler()
-    if(widthValid && heightValid && priceValid) {
+    if(widthValid && heightValid && priceValid && walletConnected) {
       getCalculationHandler();
     } 
     //if result was previously changed then revert back to empty string
     else if (result !== '') {
       setResult('');
+    }
+  }
+
+  function validateWalletConnection() {
+    if(localStorage?.getItem('isWalletConnected') !== 'true') {
+      setWalletError('You must connect your Wallet')
+      setWalletErrorHidden(false);
+      return false;
+    } else {
+      return true;
     }
   }
 
@@ -307,6 +320,11 @@ const Home = () => {
                 </div>
                 <div className='container btn_container pt-5'>
                   <button className='btn btn-success' onClick={validator} disabled={metaMaskNotInstalled}>Submit</button>
+                </div>
+                <div className='row'>
+                  <div className='col-12 text-center'>
+                    <span className='text-danger' hidden={walletErrorHidden}><strong>{walletError}</strong></span>
+                  </div>
                 </div>
               </div>
               <div className='col-6'>
