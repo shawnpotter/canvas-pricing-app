@@ -259,9 +259,6 @@ const Home = () => {
 
           //then reconnect to the wallet and recreate the local contract
           connect();
-/*           createLocalContract();
-
-          switchButtons(true); */
         }
         catch (err) {
           console.log(err);
@@ -311,6 +308,7 @@ const Home = () => {
     if(!walletErrorHidden) {
       setWalletErrorHidden(true);
     }
+
     switchButtons(true);
     
     console.log('MetaMask Connected.')
@@ -352,14 +350,14 @@ const Home = () => {
   return (
     <div>
       <Head>
-        <title>Calculator App</title>
+        <title>Canvas Pricing App</title>
         <meta name="description" content="A blockchain pricing tool" />
       </Head>
       <div className='container'>
         <nav className='navbar mt-4'>
           <div>
             <div className='navbar-brand'>
-              <h1>Calculator App</h1>
+              <h1>Canvas Pricing App</h1>
             </div>
           </div>
           <div className='navbar-end'>
