@@ -317,13 +317,15 @@ const Home = () => {
   }
 
   //when metamask emits that it disconnected deactivate, set local storage var, and switch buttons
-  async function disconnect() {
+  const disconnect = async () => {
     try {
       deactivate();
-      console.log('MetaMask Disconnected...')
+      console.log('MetaMask Disconnected...');
 
       localStorage.setItem('isWalletConnected', 'false');
       console.log('Cleared local storage.');
+
+      setAccount('');
       
       switchButtons(false);
     }
