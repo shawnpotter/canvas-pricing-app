@@ -32,6 +32,7 @@ const Home = () => {
   const [priceValidText, setPriceValidText] = useState('');
   const [walletErrorHidden, setWalletErrorHidden] = useState(true);
   const [walletError, setWalletError] = useState('');
+  const [accounts, setAccounts] = useState('');
 
 
 
@@ -74,7 +75,7 @@ const Home = () => {
   function validateWalletConnection() {
 
     //if isWalletConnected is not equal to true
-    if(localStorage?.getItem('isWalletConnected') !== 'true') {
+    if(accounts.length < 1) {
       
       //set and reveal wallet error message
       setWalletError('You must connect your Wallet')
@@ -278,6 +279,9 @@ const Home = () => {
   async function connect() {
     try {
       await activate(injected);
+
+      setAccounts = await ethereum.request({ method: "eth_accounts" });
+
       createLocalContract();
       
       localStorage.setItem('isWalletConnected', true);
