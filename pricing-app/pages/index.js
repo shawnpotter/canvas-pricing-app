@@ -226,16 +226,22 @@ const Home = () => {
       //if the account is changed inside the wallet
       ethereum.on('accountsChanged', function (accounts) {
 
-        //and accounts at least a single account in it's array and isWalletConnected is true
-        if (accounts.length > 0 && localStorage?.getItem('isWalletConnected')) {
-          
+      //if isWalletConnected is true 
+      if(localStorage.getItem('isWalletConnected') === 'true') {
+        
+        //and accounts.length is greater than zero
+        if (accounts.length > 0) {
+        
+          //connect to new account
           connect();
+          console.log('MetaMask Connected.')
 
         } else {
-
+          //disconnect from the app
+          
           disconnect();
-
         }
+      }
       });
     }
   }, []);
@@ -248,7 +254,7 @@ const Home = () => {
     const connectWalletOnLoad = async () => {
 
       //if isWalletConnected variable in local storage is true
-      if (localStorage?.getItem('isWalletConnected') === 'true') {
+      if (localStorage.getItem('isWalletConnected') === 'true') {
         try {
 
           //then reconnect to the wallet and recreate the local contract
@@ -299,21 +305,26 @@ const Home = () => {
 
     createLocalContract();
     
-    localStorage.setItem('isWalletConnected', true);
+    localStorage.setItem('isWalletConnected', 'true');
     
     //if wallet error showing hide wallet error message
     if(!walletErrorHidden) {
       setWalletErrorHidden(true);
     }
     switchButtons(true);
+    
+    console.log('MetaMask Connected.')
   }
 
   //when metamask emits that it disconnected deactivate, set local storage var, and switch buttons
   async function disconnect() {
     try {
       deactivate();
-      localStorage.setItem('isWalletConnected', false);
-      console.log('cleared local storage');
+      console.log('MetaMask Disconnected...')
+
+      localStorage.setItem('isWalletConnected', 'false');
+      console.log('Cleared local storage.');
+      
       switchButtons(false);
     }
     catch (err) {
