@@ -357,8 +357,11 @@ const Home = () => {
         <nav className='navbar mt-4'>
           <div>
             <div className='navbar-brand'>
-              <h1>Canvas Pricing App</h1>
+              <h1>Canvas Pricing App <span className='beta-text fs-6'>BETA</span></h1>
             </div>
+          </div>
+          <div>
+            <span className='text-warning'><strong>*Users Need to be Connected to Rinkeby Test Network</strong></span>
           </div>
           <div className='navbar-end'>
             <button onClick={connect} className='btn btn-primary' hidden={connectBtnHidden}>Connect Wallet</button>
