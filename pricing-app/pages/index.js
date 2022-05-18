@@ -32,7 +32,7 @@ const Home = () => {
   const [priceValidText, setPriceValidText] = useState('');
   const [walletErrorHidden, setWalletErrorHidden] = useState(true);
   const [walletError, setWalletError] = useState('');
-  const [accounts, setAccounts] = useState('');
+  const [account, setAccount] = useState('');
 
 
 
@@ -54,7 +54,8 @@ const Home = () => {
    * getCalculationHandler function. If 'result' was previously changed then also
    * changes 'result' back to an empty string.
    */
-  const validator = () => {
+  function validator() {
+    console.log(account);
     //run validate functions and set boolean vars for the results
     let widthValid = validateWidthInput();
     let heightValid = validateHeightInput();
@@ -75,7 +76,7 @@ const Home = () => {
   function validateWalletConnection() {
 
     //if isWalletConnected is not equal to true
-    if(accounts.length < 1) {
+    if(account.length < 1) {
       
       //set and reveal wallet error message
       setWalletError('You must connect your Wallet')
@@ -251,10 +252,10 @@ const Home = () => {
         try {
 
           //then reconnect to the wallet and recreate the local contract
-          await activate(injected);
-          createLocalContract();
+          connect();
+/*           createLocalContract();
 
-          switchButtons(true);
+          switchButtons(true); */
         }
         catch (err) {
           console.log(err);
@@ -276,26 +277,35 @@ const Home = () => {
   }
 
   //connects to the wallet, creates a local contract, and then sets a localStorage var
-  async function connect() {
-    try {
-      await activate(injected);
-
-      setAccounts = await ethereum.request({ method: "eth_accounts" });
-
-      createLocalContract();
-      
-      localStorage.setItem('isWalletConnected', true);
-      
-      //if wallet error showing hide wallet error message
-      if(!walletErrorHidden) {
-        setWalletErrorHidden(true);
+  const connect = async () => {
+    ethereum
+    .request({ method: 'eth_requestAccounts' })
+    .then(handleAccountsChanged)
+    .catch((error) => {
+      if (error.code === 4001) {
+        // EIP-1193 userRejectedRequest error
+        console.log('Please connect to MetaMask.');
+      } else {
+        console.error(error);
       }
-      
-      switchButtons(true);
+    });
+  }
+  
+  const handleAccountsChanged = async () => {
+    
+    const accounts = await ethereum.request({ method: "eth_accounts" });
+    
+    setAccount(accounts);
+
+    createLocalContract();
+    
+    localStorage.setItem('isWalletConnected', true);
+    
+    //if wallet error showing hide wallet error message
+    if(!walletErrorHidden) {
+      setWalletErrorHidden(true);
     }
-    catch (err) {
-      console.log(err);
-    }
+    switchButtons(true);
   }
 
   //when metamask emits that it disconnected deactivate, set local storage var, and switch buttons
