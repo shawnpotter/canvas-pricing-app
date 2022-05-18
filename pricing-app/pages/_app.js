@@ -1,7 +1,8 @@
 import '../styles/globals.css'
 import {Web3ReactProvider} from '@web3-react/core';
 import Web3 from 'web3';
-import '../styles/form.css'
+import '../styles/form.css';
+import '../styles/guidelines.css';
 
 function  getLibrary(provider) {
   return new Web3(provider);

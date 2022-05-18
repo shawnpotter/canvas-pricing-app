@@ -35,9 +35,10 @@ input {
     box-sizing: border-box;
     height: 31rem;
     padding: 1.25rem;
-    width: 40rem;
+    width: 65rem;
     background-color: #2a2b38 !important;
     background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
+    background-size: contain;
     background-repeat: no-repeat;
 }
 
