@@ -98,8 +98,8 @@ const Home = () => {
       setWidthValidHidden(false);
     } 
     //else if width is less than zero set error message and set hidden false
-    else if (width < 0) {
-      setWidthValidText("Must enter a a number 0 or higher");
+    else if (width < 1) {
+      setWidthValidText("Must enter a number higher than zero");
       setWidthValidHidden(false);
     } 
     //else return true and set the error message back to hidden
@@ -122,9 +122,9 @@ const Home = () => {
       return false;
     } 
     //else if height is less than zero set error message and set hidden false
-    else if (height < 0) {
+    else if (height < 1) {
       
-      setHeightValidText("Must enter a a number 0 or higher");
+      setHeightValidText("Must enter a number higher than zero");
       setHeightValidHidden(false);
       
       return false;
@@ -152,10 +152,10 @@ const Home = () => {
       return false;
     } 
     //else if price is less than zero
-    else if (price < 0) {
+    else if (price < 0.01) {
 
       //set error message and reveal
-      setPriceValidText("Must enter a a number 0 or higher");
+      setPriceValidText("Must enter a number higher than zero");
       setPriceValidHidden(false);
 
       //return false to validator()
