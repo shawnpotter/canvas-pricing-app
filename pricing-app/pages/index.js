@@ -5,13 +5,13 @@ import Web3 from 'web3';
 import { useWeb3React } from "@web3-react/core"
 import calculatorContract from '../blockchain/calculator';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { injected } from '../components/connectors/connectors';
+//import { injected } from '../components/connectors/connectors';
 import metamaskLogo from '../public/metamask-fox.png';
 import Guidelines from '../pages/api/article.js';
 
 const Home = () => {
 
-  const { activate, deactivate } = useWeb3React();
+  const { deactivate } = useWeb3React();
 
   //React hooks
   const [error, setError] = useState('');
@@ -32,6 +32,7 @@ const Home = () => {
   const [priceValidText, setPriceValidText] = useState('');
   const [walletErrorHidden, setWalletErrorHidden] = useState(true);
   const [walletError, setWalletError] = useState('');
+  const [account, setAccount] = useState('');
 
 
 
@@ -53,7 +54,8 @@ const Home = () => {
    * getCalculationHandler function. If 'result' was previously changed then also
    * changes 'result' back to an empty string.
    */
-  const validator = () => {
+  function validator() {
+    console.log(account);
     //run validate functions and set boolean vars for the results
     let widthValid = validateWidthInput();
     let heightValid = validateHeightInput();
@@ -74,7 +76,7 @@ const Home = () => {
   function validateWalletConnection() {
 
     //if isWalletConnected is not equal to true
-    if(localStorage?.getItem('isWalletConnected') !== 'true') {
+    if(account.length < 1) {
       
       //set and reveal wallet error message
       setWalletError('You must connect your Wallet')
@@ -224,16 +226,22 @@ const Home = () => {
       //if the account is changed inside the wallet
       ethereum.on('accountsChanged', function (accounts) {
 
-        //and accounts at least a single account in it's array and isWalletConnected is true
-        if (accounts.length > 0 && localStorage?.getItem('isWalletConnected')) {
-          
+      //if isWalletConnected is true 
+      if(localStorage.getItem('isWalletConnected') === 'true') {
+        
+        //and accounts.length is greater than zero
+        if (accounts.length > 0) {
+        
+          //connect to new account
           connect();
+          console.log('MetaMask Connected.')
 
         } else {
-
+          //disconnect from the app
+          
           disconnect();
-
         }
+      }
       });
     }
   }, []);
@@ -246,14 +254,11 @@ const Home = () => {
     const connectWalletOnLoad = async () => {
 
       //if isWalletConnected variable in local storage is true
-      if (localStorage?.getItem('isWalletConnected') === 'true') {
+      if (localStorage.getItem('isWalletConnected') === 'true') {
         try {
 
           //then reconnect to the wallet and recreate the local contract
-          await activate(injected);
-          createLocalContract();
-
-          switchButtons(true);
+          connect();
         }
         catch (err) {
           console.log(err);
@@ -275,31 +280,51 @@ const Home = () => {
   }
 
   //connects to the wallet, creates a local contract, and then sets a localStorage var
-  async function connect() {
-    try {
-      await activate(injected);
-      createLocalContract();
-      
-      localStorage.setItem('isWalletConnected', true);
-      
-      //if wallet error showing hide wallet error message
-      if(!walletErrorHidden) {
-        setWalletErrorHidden(true);
+  const connect = async () => {
+    ethereum
+    .request({ method: 'eth_requestAccounts' })
+    .then(handleAccountsChanged)
+    .catch((error) => {
+      if (error.code === 4001) {
+        // EIP-1193 userRejectedRequest error
+        console.log('Please connect to MetaMask.');
+      } else {
+        console.error(error);
       }
-      
-      switchButtons(true);
+    });
+  }
+  
+  const handleAccountsChanged = async () => {
+    
+    const accounts = await ethereum.request({ method: "eth_accounts" });
+    
+    setAccount(accounts);
+
+    createLocalContract();
+    
+    localStorage.setItem('isWalletConnected', 'true');
+    
+    //if wallet error showing hide wallet error message
+    if(!walletErrorHidden) {
+      setWalletErrorHidden(true);
     }
-    catch (err) {
-      console.log(err);
-    }
+
+    switchButtons(true);
+    
+    console.log('MetaMask Connected.')
   }
 
   //when metamask emits that it disconnected deactivate, set local storage var, and switch buttons
-  async function disconnect() {
+  const disconnect = async () => {
     try {
       deactivate();
-      localStorage.setItem('isWalletConnected', false);
-      console.log('cleared local storage');
+      console.log('MetaMask Disconnected...');
+
+      localStorage.setItem('isWalletConnected', 'false');
+      console.log('Cleared local storage.');
+
+      setAccount('');
+      
       switchButtons(false);
     }
     catch (err) {
@@ -325,15 +350,18 @@ const Home = () => {
   return (
     <div>
       <Head>
-        <title>Calculator App</title>
+        <title>Canvas Pricing App</title>
         <meta name="description" content="A blockchain pricing tool" />
       </Head>
       <div className='container'>
         <nav className='navbar mt-4'>
           <div>
             <div className='navbar-brand'>
-              <h1>Calculator App</h1>
+              <h1>Canvas Pricing App <span className='beta-text fs-6'>BETA</span></h1>
             </div>
+          </div>
+          <div>
+            <span className='text-warning'><strong>*Users Need to be Connected to Rinkeby Test Network</strong></span>
           </div>
           <div className='navbar-end'>
             <button onClick={connect} className='btn btn-primary' hidden={connectBtnHidden}>Connect Wallet</button>
