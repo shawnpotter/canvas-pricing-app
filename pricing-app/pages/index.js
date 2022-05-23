@@ -359,7 +359,7 @@ const Home = () => {
               <h1>Canvas Pricing App <span className='beta-text fs-6'>BETA</span></h1>
             </div>
           </div>
-          <div>
+          <div className='pb-3 pb-lg-0'>
             <span className='text-warning'><strong>*Users Need to be Connected to Rinkeby Test Network</strong></span>
           </div>
           <div className='navbar-end'>
@@ -377,53 +377,57 @@ const Home = () => {
             </button>
           </div>
         </nav>
-        <div className='container form-main'>
-          <div className='calculatorForm'>
-            <div className='row'>
-              <div className='col-6'>
-                <div>
-                  <label className='form-label'> Width: (Inches)
-                    <input onChange={updateWidth} className='form-control' type={"text"} name={"width"} required/>
-                    <span className='text-danger' hidden={widthValidHidden}>{widthValidText}</span>
-                  </label>
-                </div>
-                <div>
-                  <label className='form-label'> Height: (Inches)
-                    <input onChange={updateHeight} className='form-control' type={"text"} name={"height"} required/>
-                    <span className='text-danger' hidden={heightValidHidden}>{heightValidText}</span>
-                  </label>
-                </div>
-                <div>
-                  <label className='form-label'> Price per Square Inch: $USD
-                    <input onChange={updatePrice} className='form-control' type={"number"} step=".01" min={"0"} max={"10"} placeholder={"0.00"} name={"squareInch"} required/>
-                    <span className='text-danger' hidden={priceValidHidden}>{priceValidText}</span>
-                  </label>
-                </div>
-                <div className='container btn_container pt-5'>
-                  <button className='btn btn-success' onClick={validator} disabled={metaMaskNotInstalled}>Submit</button>
-                </div>
-                <div className='row'>
-                  <div className='col-12 text-center'>
-                    <span className='text-danger' hidden={walletErrorHidden}><strong>{walletError}</strong></span>
+        <div className='row'>
+          <div className='container form-main col-lg-8'>
+            <div className='calculatorForm'>
+              <div className='row'>
+                <div className='col-6'>
+                  <div>
+                    <label className='form-label'> Width: (Inches)
+                      <input onChange={updateWidth} className='form-control' type={"text"} name={"width"} required/>
+                      <span className='text-danger' hidden={widthValidHidden}>{widthValidText}</span>
+                    </label>
+                  </div>
+                  <div>
+                    <label className='form-label'> Height: (Inches)
+                      <input onChange={updateHeight} className='form-control' type={"text"} name={"height"} required/>
+                      <span className='text-danger' hidden={heightValidHidden}>{heightValidText}</span>
+                    </label>
+                  </div>
+                  <div>
+                    <label className='form-label'> Price per Square Inch: $USD
+                      <input onChange={updatePrice} className='form-control' type={"number"} step=".01" min={"0"} max={"10"} placeholder={"0.00"} name={"squareInch"} required/>
+                      <span className='text-danger' hidden={priceValidHidden}>{priceValidText}</span>
+                    </label>
+                  </div>
+                  <div className='container btn_container pt-5'>
+                    <button className='btn btn-success' onClick={validator} disabled={metaMaskNotInstalled}>Submit</button>
+                  </div>
+                  <div className='row'>
+                    <div className='col-12 text-center'>
+                      <span className='text-danger' hidden={walletErrorHidden}><strong>{walletError}</strong></span>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className='col-6'>
-                <section>
-                  <div className='container result'>
-                    <p>Result: {result}</p>
-                  </div>
-                </section>
-                <section>
-                  <div className='container text-danger'>
-                    <p>{error}</p>
-                  </div>
-                </section>
+                <div className='col-6'>
+                  <section>
+                    <div className='container result'>
+                      <p>Result: {result}</p>
+                    </div>
+                  </section>
+                  <section>
+                    <div className='container text-danger'>
+                      <p>{error}</p>
+                    </div>
+                  </section>
+                </div>
               </div>
             </div>
           </div>
-        <Guidelines/> 
-       </div>
+          <div className='col-lg-4 pt-lg-0 pt-5'>
+            <Guidelines/> 
+          </div>
+        </div>
       </div>
     </div>
   )
