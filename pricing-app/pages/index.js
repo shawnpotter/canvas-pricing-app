@@ -365,16 +365,16 @@ const Home = () => {
           <div className='navbar-end'>
             <button onClick={connect} className='btn btn-primary' hidden={connectBtnHidden}>Connect Wallet</button>
             <button className='btn btn-primary' hidden={statusBtn} disabled>Connected</button>
-            <button onClick={redirectMetaMask} className='btn btn-primary' hidden={installBtnHidden}>
+            <div onClick={redirectMetaMask} className='btn btn-primary' hidden={installBtnHidden}>
               <div className='row pt-1'>
                 <div className='col'>
-                  <Image height='23px' width='25px' src={metamaskLogo}></Image>
+                  <Image height='23px' width='25px' src={metamaskLogo} alt="The logo for MetaMask Crypto Wallet"></Image>
                 </div>
                 <div className='col-auto'>
                   <span>Install MetaMask</span>
                 </div>
               </div>
-            </button>
+            </div>
           </div>
         </nav>
         <div className='row'>
@@ -424,7 +424,7 @@ const Home = () => {
               </div>
             </div>
           </div>
-          <div className='col-lg-4 pt-lg-0 pt-5'>
+          <div className='col-lg-4 pt-lg-0 pt-5 align-self-center'>
             <Guidelines/> 
           </div>
         </div>
