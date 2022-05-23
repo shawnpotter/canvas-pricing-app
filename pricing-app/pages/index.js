@@ -5,7 +5,6 @@ import Web3 from 'web3';
 import { useWeb3React } from "@web3-react/core"
 import calculatorContract from '../blockchain/calculator';
 import 'bootstrap/dist/css/bootstrap.min.css';
-//import { injected } from '../components/connectors/connectors';
 import metamaskLogo from '../public/metamask-fox.png';
 import Guidelines from '../pages/api/article.js';
 
