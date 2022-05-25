@@ -5,3 +5,11 @@ article {
 .hint {
    font-size: smaller; 
 }
+li:first-of-type {
+    display: block;
+    font-size: 1em;
+    margin-bottom: 0.5em;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
+}
